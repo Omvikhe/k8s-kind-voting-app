@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kubescape-scan
+  annotations:
+    argocd.argoproj.io/hook: PostSync  # Runs after deployment
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: kubescape
+          image: quay.io/kubescape/kubescape:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              kubescape scan framework nsa --format json --output /tmp/kubescape-report.json
+              cat /tmp/kubescape-report.json | jq '.' > /tmp/kubescape-report.md
+              apt-get update && apt-get install -y pandoc mutt
+              pandoc /tmp/kubescape-report.md -o /tmp/kubescape-report.pdf
+              echo "Please find the attached Kubescape scan report." | mutt -s "Kubescape Scan Report" -a /tmp/kubescape-report.pdf -- probot7757@gmail.com
+      volumes:
+        - name: reports-storage
+          persistentVolumeClaim:
+            claimName: kubescape-pvc
+      volumeMounts:
+        - name: reports-storage
+          mountPath: /mnt/reports
