@@ -16,7 +16,7 @@ spec:
           args:
             - |
               kubescape scan framework nsa --format pdf --output /home/ditiss/email/report.pdf
-              echo "Please find the attached PDF." | mutt -s "Subject: PDF Attachment" -a /home/ditiss/test.pdf -- probot7757@gmail.com
+              echo "Please find the attached PDF." | mutt -s "Subject: PDF Attachment" -a /home/ditiss/email/report.pdf -- probot7757@gmail.com
       volumes:
         - name: reports-storage
           persistentVolumeClaim:
