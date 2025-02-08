@@ -15,11 +15,8 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              kubescape scan framework nsa --format json --output /tmp/kubescape-report.json
-              cat /tmp/kubescape-report.json | jq '.' > /tmp/kubescape-report.md
-              apt-get update && apt-get install -y pandoc mutt
-              pandoc /tmp/kubescape-report.md -o /tmp/kubescape-report.pdf
-              echo "Please find the attached Kubescape scan report." | mutt -s "Kubescape Scan Report" -a /tmp/kubescape-report.pdf -- probot7757@gmail.com
+              kubescape scan framework nsa --format pdf --output /home/ditiss/email/report.pdf
+              echo "Please find the attached PDF." | mutt -s "Subject: PDF Attachment" -a /home/ditiss/test.pdf -- probot7757@gmail.com
       volumes:
         - name: reports-storage
           persistentVolumeClaim:
